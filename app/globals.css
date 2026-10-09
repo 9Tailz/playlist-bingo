@@ -1,0 +1,245 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Design tokens (space-separated RGB channels so Tailwind alpha modifiers work) */
+  --background: 7 21 28;
+  --background-2: 13 32 41;
+  --surface: 23 42 52;
+  --surface-2: 29 50 61;
+  --foreground: 244 247 248;
+  --foreground-2: 154 170 178;
+  --muted: 104 121 129;
+  --cyan: 102 242 208;
+  --blue: 85 223 255;
+  --pink: 245 54 122;
+  --purple: 155 140 255;
+  --border: rgba(255, 255, 255, 0.07);
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  color: rgb(var(--foreground));
+  font-family: var(--font-sans), system-ui, sans-serif;
+  background:
+    radial-gradient(circle at 10% 50%, rgba(0, 220, 255, 0.08), transparent 30%),
+    radial-gradient(circle at 90% 50%, rgba(255, 40, 130, 0.08), transparent 30%),
+    rgb(var(--background));
+  background-attachment: fixed;
+}
+
+:focus-visible {
+  outline: 2px solid rgb(var(--cyan));
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ---------- Bingo sheets (shared by screen preview and print) ---------- */
+
+.sheet-theme-screen {
+  --sh-bg: rgb(var(--surface));
+  --sh-fg: rgb(var(--foreground));
+  --sh-fg-2: rgb(var(--foreground-2));
+  --sh-line: rgba(255, 255, 255, 0.14);
+  --sh-accent: rgb(var(--cyan));
+  --sh-free: rgba(102, 242, 208, 0.12);
+}
+
+.sheet-theme-print {
+  --sh-bg: #fff;
+  --sh-fg: #111;
+  --sh-fg-2: #444;
+  --sh-line: #222;
+  --sh-accent: #111;
+  --sh-free: #e8e8e8;
+}
+
+.bingo-card {
+  background: var(--sh-bg);
+  color: var(--sh-fg);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.bingo-card-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.bingo-card-title {
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1.1;
+}
+
+.bingo-card-number {
+  color: var(--sh-fg-2);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.bingo-grid {
+  display: grid;
+  border-top: 1.5px solid var(--sh-line);
+  border-left: 1.5px solid var(--sh-line);
+}
+
+.bingo-cell {
+  aspect-ratio: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 4px;
+  text-align: center;
+  border-right: 1.5px solid var(--sh-line);
+  border-bottom: 1.5px solid var(--sh-line);
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  hyphens: auto;
+}
+
+.bingo-cell-title {
+  font-weight: 700;
+  line-height: 1.15;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  overflow: hidden;
+}
+
+.bingo-cell-artist {
+  color: var(--sh-fg-2);
+  line-height: 1.15;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.bingo-cell-free {
+  background: var(--sh-free);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sh-accent);
+}
+
+/* Master sheet */
+.master {
+  background: var(--sh-bg);
+  color: var(--sh-fg);
+}
+
+.master-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.master-table th {
+  text-align: left;
+  color: var(--sh-fg-2);
+  font-weight: 600;
+  border-bottom: 1.5px solid var(--sh-line);
+}
+
+.master-table td,
+.master-table th {
+  padding: 4px 6px;
+  vertical-align: middle;
+}
+
+.master-table tr {
+  break-inside: avoid;
+}
+
+.master-table tbody tr {
+  border-bottom: 1px solid var(--sh-line);
+}
+
+.master-box {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid var(--sh-line);
+  border-radius: 2px;
+}
+
+.win-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 0;
+}
+
+.win-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 3px 6px;
+  border-bottom: 1px solid var(--sh-line);
+  font-variant-numeric: tabular-nums;
+  break-inside: avoid;
+}
+
+/* ---------- Print ---------- */
+
+.print-root {
+  display: none;
+}
+
+@media print {
+  @page {
+    margin: 12mm;
+  }
+
+  html,
+  body {
+    background: #fff !important;
+    background-image: none !important;
+  }
+
+  .app-shell {
+    display: none !important;
+  }
+
+  .print-root {
+    display: block;
+  }
+
+  body[data-print="master"] .print-cards,
+  body[data-print="cards"] .print-master {
+    display: none;
+  }
+
+  .print-page {
+    break-after: page;
+    page-break-after: always;
+  }
+
+  .print-page:last-child {
+    break-after: auto;
+    page-break-after: auto;
+  }
+
+  .win-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
